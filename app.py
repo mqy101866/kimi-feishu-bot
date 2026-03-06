@@ -341,12 +341,16 @@ Kimi API: {'✅ 正常' if KIMI_API_KEY else '❌ 未配置'}
 @app.route("/test", methods=["GET"])
 def test():
     """测试 Kimi API 是否正常工作"""
+    # 调试：显示 Key 的前 10 个字符
+    key_preview = KIMI_API_KEY[:15] + "..." if KIMI_API_KEY else "未设置"
+    
     if not KIMI_API_KEY:
-        return jsonify({"error": "KIMI_API_KEY 未设置"})
+        return jsonify({"error": "KIMI_API_KEY 未设置", "key_preview": key_preview})
     
     reply = chat_with_kimi("你好，请介绍一下自己", "test_session")
     return jsonify({
         "status": "ok",
+        "key_preview": key_preview,
         "kimi_reply": reply[:200] + "..." if len(reply) > 200 else reply
     })
 

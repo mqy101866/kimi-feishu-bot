@@ -269,14 +269,30 @@ def webhook():
 🔍 查资料、解答问题
 
 有什么可以帮你的吗？"""
-                send_message_to_feishu(sender_id, reply, msg_type="interactive", is_user=True)
-                return jsonify({"code": 0})
+                return jsonify({
+                    "msg_type": "interactive",
+                    "card": {
+                        "config": {"wide_screen_mode": True},
+                        "elements": [
+                            {"tag": "div", "text": {"tag": "lark_md", "content": reply[:4000]}}
+                        ],
+                        "header": {"template": "blue", "title": {"tag": "plain_text", "content": "Kimi 智能助理"}}
+                    }
+                })
             
             if text == "/new":
                 if session_id in conversations:
                     del conversations[session_id]
-                send_message_to_feishu(sender_id, "✅ 已开启新对话，上下文已清空", is_user=True)
-                return jsonify({"code": 0})
+                return jsonify({
+                    "msg_type": "interactive",
+                    "card": {
+                        "config": {"wide_screen_mode": True},
+                        "elements": [
+                            {"tag": "div", "text": {"tag": "lark_md", "content": "✅ 已开启新对话，上下文已清空"}}
+                        ],
+                        "header": {"template": "green", "title": {"tag": "plain_text", "content": "提示"}}
+                    }
+                })
             
             if text == "/status":
                 reply = f"""📊 **服务状态**
@@ -285,8 +301,16 @@ Kimi API: {'✅ 正常' if KIMI_API_KEY else '❌ 未配置'}
 飞书连接: ✅ 正常
 当前会话数: {len(conversations)}
 """
-                send_message_to_feishu(sender_id, reply, msg_type="interactive", is_user=True)
-                return jsonify({"code": 0})
+                return jsonify({
+                    "msg_type": "interactive",
+                    "card": {
+                        "config": {"wide_screen_mode": True},
+                        "elements": [
+                            {"tag": "div", "text": {"tag": "lark_md", "content": reply[:4000]}}
+                        ],
+                        "header": {"template": "blue", "title": {"tag": "plain_text", "content": "服务状态"}}
+                    }
+                })
             
             # 普通消息：同步处理（飞书 3 秒内必须返回）
             # 先返回"正在输入"提示，避免超时

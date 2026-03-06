@@ -1,0 +1,10 @@
+PythonAnywhere 配置：
+
+1. Source code: /home/mqy101866/kimi-feishu-bot
+2. Working directory: /home/mqy101866/kimi-feishu-bot  
+3. WSGI configuration file: /var/www/mqy101866_pythonanywhere_com_wsgi.py
+
+WSGI 文件内容应该是：
+import sys
+sys.path.insert(0, '/home/mqy101866/kimi-feishu-bot')
+from wsgi import application

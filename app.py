@@ -209,7 +209,9 @@ def webhook():
     """
     try:
         data = request.get_json()
-        print(f"[{datetime.now()}] 收到飞书消息: {json.dumps(data, ensure_ascii=False)[:500]}")
+        # 打印完整请求用于调试
+        print(f"[{datetime.now()}] 收到飞书消息: {json.dumps(data, ensure_ascii=False)}")
+        print(f"Headers: {dict(request.headers)}")
         
         if not data:
             return jsonify({"code": 0})

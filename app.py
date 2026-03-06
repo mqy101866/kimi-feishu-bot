@@ -16,7 +16,7 @@ load_dotenv()
 app = Flask(__name__)
 
 # ==================== 配置区域 ====================
-KIMI_API_KEY = os.getenv("KIMI_API_KEY", "")
+KIMI_API_KEY = os.getenv("KIMI_API_KEY", "sk-wRqcOK36TuLrn8W5Q5TPa4p1eO1r0yQYV3WbPiMVqKaUMVBc")
 KIMI_BASE_URL = "https://api.moonshot.cn/v1"
 
 # 飞书应用配置

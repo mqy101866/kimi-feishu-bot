@@ -8,6 +8,10 @@ import requests
 import os
 import json
 from datetime import datetime
+from dotenv import load_dotenv
+
+# 加载 .env 文件
+load_dotenv()
 
 app = Flask(__name__)
 
@@ -284,12 +288,22 @@ Kimi API: {'✅ 正常' if KIMI_API_KEY else '❌ 未配置'}
                 send_message_to_feishu(sender_id, reply, msg_type="interactive", is_user=True)
                 return jsonify({"code": 0})
             
-            # 普通消息：异步处理（防止飞书 3 秒超时）
-            # 先返回空响应，然后异步发送 AI 回复
-            process_message_async(sender_id, text, session_id)
+            # 普通消息：同步处理（飞书 3 秒内必须返回）
+            # 先返回"正在输入"提示，避免超时
+            reply = chat_with_kimi(text, session_id)
             
-            # 飞书要求必须返回 code:0
-            return jsonify({"code": 0})
+            # 直接返回卡片消息
+            return jsonify({
+                "msg_type": "interactive",
+                "card": {
+                    "config": {"wide_screen_mode": True},
+                    "elements": [
+                        {"tag": "div", "text": {"tag": "lark_md", "content": reply[:4000]}},
+                        {"tag": "note", "elements": [{"tag": "plain_text", "content": "🤖 Kimi 智能助理"}]}
+                    ],
+                    "header": {"template": "blue", "title": {"tag": "plain_text", "content": "Kimi 回复"}}
+                }
+            })
         
         # 其他消息类型
         return jsonify({"code": 0})
